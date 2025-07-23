@@ -8,6 +8,9 @@ import PrivateRoute from './PrivateRoute';
 
 import JobList from "./JobList";
 import JobDetails from "./JobDetails";
+import SeekerDashboard from "./SeekerDashboard";
+import EmployerDashboard from "./EmployerDashboard";
+import Profile from "./Profile";
 
 // Placeholder components for routes whose real versions require authentication
 const Home = () => (
@@ -20,9 +23,6 @@ const Home = () => (
     </p>
   </section>
 );
-const SeekerDashboard = () => <section><h2>Seeker Dashboard</h2></section>;
-const EmployerDashboard = () => <section><h2>Employer Dashboard</h2></section>;
-const Profile = () => <section><h2>Profile</h2></section>;
 const NotFound = () => <section><h2>404 - Not Found</h2></section>;
 
 /**
