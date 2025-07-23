@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
+import { AuthProvider, useAuth } from './AuthContext';
+import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
+import PrivateRoute from './PrivateRoute';
 
-// Placeholder components for each route
+// Placeholder components for routes whose real versions require authentication
 const Home = () => <section><h2>Home</h2><p>Welcome to the IT Job Portal.</p></section>;
-const Login = () => <section><h2>Login</h2><p>Login form comes here.</p></section>;
-const Register = () => <section><h2>Register</h2><p>Registration form comes here.</p></section>;
 const JobDetails = () => <section><h2>Job Details</h2><p>Details for job (dynamic page).</p></section>;
+// Will move dashboard/profile to their own files later
 const SeekerDashboard = () => <section><h2>Seeker Dashboard</h2></section>;
 const EmployerDashboard = () => <section><h2>Employer Dashboard</h2></section>;
 const Profile = () => <section><h2>Profile</h2></section>;
@@ -16,17 +19,28 @@ const NotFound = () => <section><h2>404 - Not Found</h2></section>;
  * Navigation bar shown at top of every page.
  */
 const Navbar = ({ theme, toggleTheme }) => {
-  const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+  // Show role-based dashboard links
   return (
     <nav className="navbar" style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)' }}>
       <div>
         <Link className="App-link" to="/">IT Job Portal</Link>
         <Link className="App-link" to="/jobs" style={{ marginLeft: '24px' }}>Jobs</Link>
-        <Link className="App-link" to="/login" style={{ marginLeft: '24px' }}>Login</Link>
-        <Link className="App-link" to="/register" style={{ marginLeft: '16px' }}>Register</Link>
-        <Link className="App-link" to="/dashboard/seeker" style={{ marginLeft: '16px' }}>Seeker Dashboard</Link>
-        <Link className="App-link" to="/dashboard/employer" style={{ marginLeft: '16px' }}>Employer Dashboard</Link>
-        <Link className="App-link" to="/profile" style={{ marginLeft: '16px' }}>Profile</Link>
+        {!isAuthenticated && (
+          <>
+            <Link className="App-link" to="/login" style={{ marginLeft: '24px' }}>Login</Link>
+            <Link className="App-link" to="/register" style={{ marginLeft: '16px' }}>Register</Link>
+          </>
+        )}
+        {isAuthenticated && user && (
+          <>
+            {user.role === "seeker" && <Link className="App-link" to="/dashboard/seeker" style={{ marginLeft: '16px' }}>Seeker Dashboard</Link>}
+            {user.role === "employer" && <Link className="App-link" to="/dashboard/employer" style={{ marginLeft: '16px' }}>Employer Dashboard</Link>}
+            <Link className="App-link" to="/profile" style={{ marginLeft: '16px' }}>Profile</Link>
+            <button onClick={() => { logout(); navigate('/'); }} className="theme-toggle" style={{ marginLeft: 14, background: "#f35353" }}>Logout</button>
+          </>
+        )}
       </div>
       <button
         className="theme-toggle"
@@ -51,21 +65,46 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="App">
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      <div className="container" style={{ maxWidth: 900, margin: '32px auto', padding: 24 }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/jobs/:id" element={<JobDetails />} />
-          <Route path="/dashboard/seeker" element={<SeekerDashboard />} />
-          <Route path="/dashboard/employer" element={<EmployerDashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+    <AuthProvider>
+      <div className="App">
+        <Navbar theme={theme} toggleTheme={toggleTheme} />
+        <div className="container" style={{ maxWidth: 900, margin: '32px auto', padding: 24 }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/jobs/:id" element={<JobDetails />} />
+
+            {/* DASHBOARDS and PROFILE are protected */}
+            <Route
+              path="/dashboard/seeker"
+              element={
+                <PrivateRoute requiredRole="seeker">
+                  <SeekerDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/employer"
+              element={
+                <PrivateRoute requiredRole="employer">
+                  <EmployerDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 }
 
