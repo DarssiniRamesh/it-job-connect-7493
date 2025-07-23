@@ -6,10 +6,20 @@ import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import PrivateRoute from './PrivateRoute';
 
+import JobList from "./JobList";
+import JobDetails from "./JobDetails";
+
 // Placeholder components for routes whose real versions require authentication
-const Home = () => <section><h2>Home</h2><p>Welcome to the IT Job Portal.</p></section>;
-const JobDetails = () => <section><h2>Job Details</h2><p>Details for job (dynamic page).</p></section>;
-// Will move dashboard/profile to their own files later
+const Home = () => (
+  <section>
+    <h2>Welcome to IT Job Portal</h2>
+    <p>
+      Discover top IT jobs, post vacancies, and find your next opportunity in tech.
+      <br />
+      Use the "Jobs" tab to search openings!
+    </p>
+  </section>
+);
 const SeekerDashboard = () => <section><h2>Seeker Dashboard</h2></section>;
 const EmployerDashboard = () => <section><h2>Employer Dashboard</h2></section>;
 const Profile = () => <section><h2>Profile</h2></section>;
@@ -73,6 +83,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/jobs" element={<JobList />} />
             <Route path="/jobs/:id" element={<JobDetails />} />
 
             {/* DASHBOARDS and PROFILE are protected */}
