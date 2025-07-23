@@ -27,10 +27,10 @@ export default function Profile() {
         const data = await api.get("/profile");
         setProfile(data);
         setForm({
-          full_name: data.full_name || "",
-          bio: data.bio || "",
-          skills: data.skills || "",
-          company: data.company || ""
+          full_name: data.full_name ?? "",
+          bio: data.bio ?? "",
+          skills: data.skills ?? "",
+          company: data.company ?? ""
         });
       } catch (e) {
         setErr(e.message || "Failed to load profile.");

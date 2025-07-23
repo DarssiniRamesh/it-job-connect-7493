@@ -64,11 +64,11 @@ export default function JobList() {
         <div style={{ color: "red", margin: 24 }}>{err}</div>
       ) : (
         <>
-          {jobs.length === 0 && (
+          {jobs.length === 0 ? (
             <div style={{ margin: "32px 0", color: "#999" }}>
-              No jobs found. Try adjusting search/filter.
+              No jobs found. {search.length > 0 || location.length > 0 ? "Try adjusting search/filter." : "Check back soon for new postings!"}
             </div>
-          )}
+          ) : null}
           <ul style={{ listStyle: "none", padding: 0, marginTop: 14 }}>
             {jobs.map(job => (
               <li

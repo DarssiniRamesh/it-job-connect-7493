@@ -26,11 +26,23 @@ export default function EmployerDashboard() {
         // Fetch applications (GET /applications: employer sees all applicants to their jobs)
         const apps = await api.get("/applications");
         setApplications(apps || []);
-        // Find unique job ids from those apps that belong to this employer
-        // Collect all jobs from applications plus GET /jobs for own jobs
-        const allMyJobs = (apps || [])
-          .map(a => a.job)
-          .filter((job, idx, arr) => job && arr.findIndex(j2 => j2.id === job.id) === idx);
+        // Find unique job ids from those apps that belong to this employer (apps may be empty if no applicants)
+        // Allow for "no jobs posted" - Double check by also showing jobs where there are none yet
+        let allMyJobs = [];
+        if (apps && Array.isArray(apps) && apps.length > 0) {
+          allMyJobs = apps
+            .map(a => a.job)
+            .filter((job, idx, arr) => job && arr.findIndex(j2 => j2.id === job.id) === idx);
+        }
+        // If no jobs from applications, try GET /jobs and filter by user.id (backend can't list "my jobs" directly)
+        if (allMyJobs.length === 0) {
+          try {
+            const jobs = await api.get("/jobs");
+            allMyJobs = (jobs || []).filter(j => j.employer_id === user.id);
+          } catch {
+            // ignore
+          }
+        }
         setMyJobs(allMyJobs);
       } catch (e) {
         setErr(e.message || "Failed to load dashboard.");
@@ -151,9 +163,14 @@ export default function EmployerDashboard() {
         <div style={{ color: "red", margin: 20 }}>{err}</div>
       ) : (
         <>
-          {applications.length === 0 && (
+          {myJobs.length === 0 && (
             <div style={{ color: "#999", margin: "24px 0" }}>
-              No applicants yet. Post jobs and share your listings!
+              You have not posted any jobs yet. Use the form above to publish your first job.
+            </div>
+          )}
+          {myJobs.length > 0 && applications.length === 0 && (
+            <div style={{ color: "#999", margin: "24px 0" }}>
+              No applicants yet. Share your job listing to receive applications!
             </div>
           )}
           <ul style={{ listStyle: "none", padding: 0 }}>

@@ -14,10 +14,11 @@ export default function JobDetails() {
   const [err, setErr] = useState("");
   const [applying, setApplying] = useState(false);
   const [applicationSuccess, setApplicationSuccess] = useState(false);
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
 
   const navigate = useNavigate();
 
-  // Fetch job detail when id changes
+  // Fetch job detail and application state when id/user changes
   useEffect(() => {
     async function fetchJob() {
       setLoading(true);
@@ -25,14 +26,28 @@ export default function JobDetails() {
       try {
         const data = await api.get(`/jobs/${id}`);
         setJob(data);
+        // If seeker, check if already applied by fetching applications (backend ensures seekers only see their applications)
+        if (isAuthenticated && user && user.role === "seeker") {
+          try {
+            const apps = await api.get("/applications");
+            if (Array.isArray(apps) && apps.find(app => app.job_id === Number(id))) {
+              setAlreadyApplied(true);
+            } else {
+              setAlreadyApplied(false);
+            }
+          } catch {
+            setAlreadyApplied(false);
+          }
+        }
       } catch (e) {
         setErr(e.message || "Failed to load job.");
+        setJob(null);
       }
       setLoading(false);
     }
     if (id) fetchJob();
     // eslint-disable-next-line
-  }, [id]);
+  }, [id, isAuthenticated, user]);
 
   // Seeker applies for this job (simple, no cover letter for MVP)
   const handleApply = async () => {
@@ -42,8 +57,18 @@ export default function JobDetails() {
     try {
       await api.post("/applications", { job_id: Number(id), cover_letter: null });
       setApplicationSuccess(true);
+      setAlreadyApplied(true);
     } catch (e) {
-      setErr(e.message || "Failed to apply.");
+      // If backend says already applied, reflect that state
+      if (
+        e.message &&
+        (e.message.toLowerCase().includes("already applied") ||
+          e.message.toLowerCase().includes("unique constraint"))
+      ) {
+        setAlreadyApplied(true);
+      } else {
+        setErr(e.message || "Failed to apply.");
+      }
     }
     setApplying(false);
   };
@@ -56,7 +81,15 @@ export default function JobDetails() {
       <button onClick={() => navigate(-1)} style={{ marginTop: 12 }} className="theme-toggle">Back</button>
     </div>
   );
-  if (!job) return null;
+  if (!job) {
+    return (
+      <div style={{ margin: 32, color: "#888" }}>
+        Job not found.
+        <br />
+        <button onClick={() => navigate(-1)} style={{ marginTop: 12 }} className="theme-toggle">Back</button>
+      </div>
+    );
+  }
 
   return (
     <article style={{ maxWidth: 700, margin: "0 auto" }}>
@@ -73,7 +106,11 @@ export default function JobDetails() {
       </div>
       {isAuthenticated && user && user.role === "seeker" && (
         <div style={{ marginTop: 20 }}>
-          {applicationSuccess ? (
+          {alreadyApplied ? (
+            <div style={{ color: "#8642bf", fontWeight: 500, marginBottom: 12 }}>
+              You have already applied for this job. Track your application in the dashboard.
+            </div>
+          ) : applicationSuccess ? (
             <div style={{ color: "green", fontWeight: 600, marginBottom: 13 }}>
               Application sent! Check your dashboard to track status.
             </div>

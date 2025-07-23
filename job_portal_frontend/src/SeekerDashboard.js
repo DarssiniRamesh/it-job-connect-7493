@@ -41,7 +41,7 @@ export default function SeekerDashboard() {
         <>
           {applications.length === 0 && (
             <div style={{ color: "#999", margin: "32px 0" }}>
-              You haven't applied to any jobs yet. Browse <a href="/jobs" className="App-link">jobs</a>!
+              You haven't applied to any jobs yet. <a href="/jobs" className="App-link">Browse jobs</a> to get started!
             </div>
           )}
           <ul style={{ listStyle: "none", padding: 0, marginTop: 8 }}>
@@ -57,7 +57,7 @@ export default function SeekerDashboard() {
                 }}
               >
                 <div style={{ fontWeight: 600 }}>
-                  {app.job ? app.job.title : "Unknown Job"}
+                  {(app.job && app.job.title) ? app.job.title : "Unknown Job"}
                   <span style={{ color: "#aaa", fontSize: 14, marginLeft: 10 }}>
                     {app.job && app.job.location ? app.job.location : ""}
                   </span>
@@ -77,15 +77,22 @@ export default function SeekerDashboard() {
                           : "#888",
                       fontWeight: 500,
                     }}>
-                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                      {app.status && typeof app.status === "string"
+                        ? app.status.charAt(0).toUpperCase() + app.status.slice(1)
+                        : app.status
+                      }
                     </span>
                   </span>
                   <span style={{ marginLeft: 18, color: "#bbb" }}>
-                    Applied on {new Date(app.applied_at).toLocaleDateString()}
+                    {app.applied_at
+                      ? "Applied on " + new Date(app.applied_at).toLocaleDateString()
+                      : ""}
                   </span>
                 </div>
                 <div style={{ fontSize: 15, marginTop: 7, color: "var(--text-secondary)" }}>
-                  {app.job && app.job.employer_name && <span>Employer: {app.job.employer_name}</span>}
+                  {(app.job && app.job.employer_name)
+                    ? <span>Employer: {app.job.employer_name}</span>
+                    : null}
                 </div>
               </li>
             ))}
