@@ -1,33 +1,95 @@
 /* CSS Variables for Theme Management */
 :root {
-  /* Light theme colors */
+  /* Light theme colors and accent tweaks for modern/minimal design */
+  --primary: #1976d2;
+  --secondary: #fafbfc;
+  --accent: #1976d2;
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
-  --button-text: #ffffff;
+  --bg-secondary: #f5f6fa;
+  --text-primary: #222f3e;
+  --text-secondary: #6a7c92;
+  --border-color: #e5e8ef;
+  --button-bg: var(--primary);
+  --button-bg-hover: #1254a1;
+  --button-text: #fff;
+  --button-radius: 8px;
+  --shadow-light: 0 2px 8px rgba(22,27,34,0.04);
+  --shadow-hover: 0 4px 16px rgba(22,27,34,0.10);
+
+  --input-bg: #fafbfc;
+  --input-border: #dbe3ea;
+  --input-radius: 7px;
 }
 
 [data-theme="dark"] {
-  /* Dark theme colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #282c34;
-  --text-primary: #ffffff;
-  --text-secondary: #61dafb;
-  --border-color: #404040;
-  --button-bg: #0056b3;
-  --button-text: #ffffff;
+  /* Dark theme colors (minimal, still focus on clarity) */
+  --primary: #1976d2;
+  --secondary: #202a36;
+  --accent: #64b5f6;
+  --bg-primary: #151b22;
+  --bg-secondary: #232c39;
+  --text-primary: #eeeeee;
+  --text-secondary: #94a5be;
+  --border-color: #273849;
+  --button-bg: #254975;
+  --button-bg-hover: #4173b8;
+  --button-text: #fff;
+  --input-bg: #1b222b;
+  --input-border: #273849;
+}
+
+body, html {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+  transition: background 0.24s, color 0.24s;
+  font-size: 16px;
+  margin: 0;
 }
 
 .App {
   text-align: center;
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.3s, color 0.3s;
+  padding-bottom: 30px;
 }
+
+.container {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-light);
+  padding: 36px 28px;
+  margin: 26px auto 0 auto;
+  max-width: 900px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 16px 4vw;
+    margin-top: 8px;
+    border-radius: 8px;
+  }
+}
+
+.flex {
+  display: flex !important;
+}
+.flex-col {
+  flex-direction: column !important;
+}
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+.justify-center {
+  justify-content: center !important;
+}
+.items-center {
+  align-items: center !important;
+}
+
 
 .App-logo {
   height: 40vmin;
@@ -41,7 +103,7 @@
 }
 
 .App-header {
-  background-color: var(--bg-secondary);
+  background: var(--bg-secondary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -49,8 +111,63 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
   position: relative;
+}
+
+.navbar {
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-light);
+  padding: 13px 4vw;
+  min-height: 60px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+}
+
+.navbar .App-link, 
+.navbar a.App-link,
+a.App-link {
+  color: var(--primary);
+  text-decoration: none;
+  margin: 0 8px;
+  font-size: 1.08rem;
+  font-weight: 500;
+  opacity: 0.92;
+  transition: color 0.19s;
+}
+.navbar .App-link:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+@media (max-width: 650px) {
+  .navbar {
+    flex-direction: column;
+    gap: 0.2em;
+    padding: 8px 2vw;
+    min-height: 44px;
+  }
+  .navbar .App-link {
+    margin: 3px 4px;
+    font-size: 0.99rem;
+  }
+}
+
+h2, h3, h4 {
+  color: var(--primary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-top: 0;
+}
+h2 {
+  font-size: 1.55rem;
+  margin-bottom: 0.55em;
+}
+h3 {
+  font-size: 1.2rem;
 }
 
 .App-link {
@@ -58,32 +175,121 @@
   transition: color 0.3s ease;
 }
 
-.theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
+.theme-toggle,
+.button, 
+.btn {
+  background: var(--button-bg);
   color: var(--button-text);
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
+  border-radius: var(--button-radius);
+  padding: 10px 24px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.18s, transform 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: var(--shadow-light);
+  outline: none;
+  margin: 0;
+  text-align: center;
+  min-width: 0;
+  display: inline-block;
 }
 
-.theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+.theme-toggle {
+  position: static;
+  margin-left: 10px;
+}
+.theme-toggle:hover,
+.button:hover,
+.btn:hover {
+  background: var(--button-bg-hover);
+  color: #fff;
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px) scale(1.02);
 }
 
-.theme-toggle:active {
-  transform: translateY(0);
+.theme-toggle:active,
+.button:active,
+.btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
+.theme-toggle:disabled,
+.button:disabled,
+.btn:disabled {
+  background: #b7c1d6 !important;
+  color: #f5f6fa !important;
+  cursor: not-allowed;
+  opacity: 0.72;
+  box-shadow: none;
+}
+
+
+@media (max-width: 768px) {
+  .theme-toggle,
+  .button,
+  .btn {
+    padding: 9px 15px;
+    font-size: 0.97rem;
+  }
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  border-radius: var(--input-radius);
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border 0.17s, box-shadow 0.17s;
+  outline: none;
+  box-sizing: border-box;
+  margin-top: 3px;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1.5px solid var(--primary);
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.07);
+}
+
+label {
+  color: var(--text-primary);
+  font-size: .97rem;
+  font-weight: 500;
+  margin-bottom: 3px;
+  display: block;
+}
+
+::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.82;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+select {
+  appearance: none;
+  background: var(--input-bg) url('data:image/svg+xml;charset=UTF-8,<svg width="16" height="16" fill="gray" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4" stroke="gray" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 0.7em center/1em;
+}
+
+@media (max-width: 500px) {
+  input, textarea {
+    font-size: 0.97rem;
+    padding: 9px 8px;
+  }
+}
+
+/* App-logo animation (not used but keep for completeness) */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -95,10 +301,57 @@
 
 /* Responsive design for mobile */
 @media (max-width: 768px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+  .theme-toggle,
+  .button,
+  .btn {
+    top: unset;
+    right: unset;
+    padding: 8px 13px;
+    font-size: 0.98rem;
   }
+}
+
+/* Utility: soft border section for cardlike areas */
+.softcard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 13px;
+  padding: 24px 18px;
+  box-shadow: var(--shadow-light);
+}
+@media (max-width: 760px) {
+  .softcard {
+    padding: 13px 5vw;
+  }
+}
+
+/* Success and error message consistency */
+.success {
+  color: #21b46b;
+  font-weight: 500;
+  margin: 8px 0;
+}
+.error-message {
+  color: #e84949;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+/* Responsiveness: unblock super-narrow side margins */
+@media (max-width:400px) {
+  .container {
+    padding: 5vw 2vw;
+    font-size: 0.98rem;
+  }
+  h2, h3 { font-size: 1.1rem !important; }
+}
+
+/* Scrollbar tweak for minimalism */
+*::-webkit-scrollbar {
+  width: 7px;
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
 }
