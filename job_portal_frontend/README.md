@@ -1,82 +1,96 @@
-# Lightweight React Template for KAVIA
+# IT Job Portal Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+A modern, minimal React single-page application for an IT-focused job portal. It connects to the FastAPI backend for user registration/login, job browsing, posting, application management, and personalized dashboards for both job seekers and employers.
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- **Registration/Login** (job seeker, employer; with role selection)
+- **Job search & filtering** by title and location
+- **Detailed job views** with "Apply" for seekers
+- **Employer dashboard** for posting jobs and managing applicants
+- **Applicant dashboard** for seekers to track their applications
+- **Profile management** (update bio, skills, company)
+- **JWT-based secure backend interaction**
+- **Role-based routes (protected pages for logged-in users)**
+- **Responsive, modern UI using only React and vanilla CSS**
 
-## Getting Started
+## Setup Instructions
 
-In the project directory, you can run:
+1. **Install Node.js** (version 16+)
+2. **Clone the repository**
+   ```sh
+   git clone <repo_url>
+   cd it-job-connect-7493/job_portal_frontend
+   ```
 
-### `npm start`
+3. **Install dependencies**
+   ```sh
+   npm install
+   ```
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. **Configure backend API URL**
 
-### `npm test`
+   By default, the frontend expects the backend to run on `http://localhost:8000`.  
+   To use a different URL, set the env variable in a `.env` file at the project root:
 
-Launches the test runner in interactive watch mode.
+   ```
+   REACT_APP_API_URL=http://localhost:8000
+   ```
 
-### `npm run build`
+## How to Run Locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Development server:**
+  ```sh
+  npm start
+  ```
+  Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+- **Tests:**
+  ```sh
+  npm test
+  ```
+
+- **Production build:**
+  ```sh
+  npm run build
+  ```
+
+## Main Pages & Routing
+
+- `/` - Home page (welcome/overview)
+- `/jobs` - Browse/search IT jobs
+- `/jobs/:id` - Job details (+ apply if seeker)
+- `/login` - Login page (with email/password)
+- `/register` - Register as job seeker or employer
+- `/dashboard/seeker` - Seeker dashboard (applied jobs)
+- `/dashboard/employer` - Employer dashboard (job postings & applicants)
+- `/profile` - User profile (view & edit)
+- (Role-protected via `PrivateRoute`)
+
+## API Integration
+
+- All data and authentication are via REST API calls to the FastAPI backend.
+- The file `src/api.js` manages HTTP requests, JWT storage/attach, and error handling.
+- Endpoints used:
+    - `/auth/register`, `/auth/login`
+    - `/profile` (get/update)
+    - `/jobs` (search/list, create, update, delete)
+    - `/applications` (create, list, update status)
+- JWT tokens are stored in localStorage and auto-attached to API requests.
+
+## Integration with Backend
+
+- Works with the [IT Job Portal Backend](../../it-job-connect-7494/job_portal_backend/README.md)
+- Expects both containers to be running:
+    - Frontend: `npm start` (port 3000)
+    - Backend: `uvicorn src.api.main:app --reload --port 8000`
+- Make sure `REACT_APP_API_URL` points to the backend base URL.
 
 ## Customization
 
-### Colors
+- Edit styles in `src/App.css` (uses CSS variables for themes/colors)
+- To change branding, edit logo and color variables.
 
-The main brand colors are defined as CSS variables in `src/App.css`:
+## License
 
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT (or as provided by this repository)
